@@ -12,6 +12,12 @@
 			"type": "shell",
 			"command": "pnpm run report",
 			"problemMatcher": []
+		},
+		{
+			"label": "Run Playwright Tests",
+			"type": "shell",
+			"command": "pnpm run test",
+			"problemMatcher": []
 		}
 	]
 }
