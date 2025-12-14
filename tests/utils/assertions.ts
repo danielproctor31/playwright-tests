@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
 /**
  * Custom assertion to verify page has correct meta tags
@@ -70,4 +70,98 @@ export async function expectValidBreadcrumbs(
       await expect(breadcrumb.getByText(item.text)).toBeVisible();
     }
   }
+}
+
+/**
+ * Custom assertion to verify heading hierarchy
+ * @param locator - The locator to check for heading
+ * @param level - Expected heading level (1-6)
+ */
+export async function expectAccessibleHeading(locator: Locator, level: number) {
+  await expect(locator).toHaveRole('heading');
+  await expect(locator).toHaveAttribute('aria-level', level.toString());
+}
+
+/**
+ * Custom assertion to verify element is keyboard accessible
+ * @param locator - The locator to verify
+ */
+export async function expectKeyboardAccessible(locator: Locator) {
+  await expect(locator).toBeVisible();
+  const tabIndex = await locator.getAttribute('tabindex');
+  expect(tabIndex === null || parseInt(tabIndex) >= 0).toBe(true);
+}
+
+/**
+ * Custom assertion to verify ARIA attributes are properly set
+ * @param locator - The locator to check
+ * @param attributes - Object with ARIA attribute names and expected values
+ */
+export async function expectProperAriaAttributes(
+  locator: Locator,
+  attributes: Record<string, string>
+) {
+  for (const [attr, value] of Object.entries(attributes)) {
+    await expect(locator).toHaveAttribute(attr, value);
+  }
+}
+
+/**
+ * Custom assertion to verify form field validation
+ * @param locator - The form field locator
+ * @param hasLabel - Whether field should have an associated label
+ */
+export async function expectValidFormField(locator: Locator, hasLabel: boolean = true) {
+  await expect(locator).toBeVisible();
+  await expect(locator).toBeEnabled();
+  
+  if (hasLabel) {
+    const id = await locator.getAttribute('id');
+    const ariaLabel = await locator.getAttribute('aria-label');
+    const ariaLabelledBy = await locator.getAttribute('aria-labelledby');
+    
+    expect(id || ariaLabel || ariaLabelledBy).toBeTruthy();
+  }
+}
+
+/**
+ * Custom assertion to verify external links have proper attributes
+ * @param locator - The link locator
+ */
+export async function expectSecureExternalLink(locator: Locator) {
+  await expect(locator).toHaveAttribute('target', '_blank');
+  await expect(locator).toHaveAttribute('rel', /noopener|noreferrer/);
+}
+
+/**
+ * Custom assertion to verify list structure
+ * @param page - Page object
+ * @param selector - CSS selector or role
+ * @param expectedCount - Expected number of list items
+ */
+export async function expectValidList(page: Page, selector: string, expectedCount?: number) {
+  const list = page.locator(selector);
+  await expect(list).toBeVisible();
+  
+  const items = list.locator('li, [role="listitem"]');
+  if (expectedCount !== undefined) {
+    await expect(items).toHaveCount(expectedCount);
+  } else {
+    await expect(items).not.toHaveCount(0);
+  }
+}
+
+/**
+ * Custom assertion to verify responsive image
+ * @param locator - The image locator
+ */
+export async function expectResponsiveImage(locator: Locator) {
+  await expect(locator).toBeVisible();
+  await expect(locator).toHaveAttribute('alt');
+  
+  // Check if image has srcset or is in a picture element
+  const hasSrcset = await locator.getAttribute('srcset');
+  const parentTag = await locator.evaluate((el) => el.parentElement?.tagName.toLowerCase());
+  
+  expect(hasSrcset || parentTag === 'picture').toBeTruthy();
 }

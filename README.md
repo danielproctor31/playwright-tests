@@ -1,11 +1,16 @@
 # Playwright DevContainer
 
-A modern Playwright end-to-end testing project with TypeScript, leveraging Model Context Protocol (MCP) for enhanced test generation and automation. This project is configured to run in a DevContainer for a consistent development environment.
+A comprehensive Playwright end-to-end testing project with TypeScript, featuring multiple test types including functional, accessibility, performance, and visual regression testing. Leverages Model Context Protocol (MCP) for enhanced test generation and automation, configured to run in a DevContainer for a consistent development environment.
 
 ## 🚀 Features
 
 - **TypeScript Support**: Fully typed test codebase with strict TypeScript configuration
-- **Page Object Model**: Organized test structure with reusable page objects
+- **Page Object Model**: Organized test structure with reusable page objects and fixtures
+- **Multiple Test Types**: 
+  - Functional tests for core user journeys
+  - Accessibility testing with @axe-core/playwright
+  - Performance testing with playwright-lighthouse
+  - Visual regression testing with screenshot comparisons
 - **DevContainer Ready**: Pre-configured development container for consistent environments
 - **Linting & Formatting**: ESLint and Prettier configured for code quality
 - **Pre-commit Hooks**: Automated code checks before commits using Husky
@@ -66,6 +71,22 @@ A modern Playwright end-to-end testing project with TypeScript, leveraging Model
 pnpm test
 ```
 
+### Run specific test types
+
+```bash
+# Run only functional tests (excluding accessibility, performance, and visual tests)
+pnpm test:functional
+
+# Run accessibility tests
+pnpm test:a11y
+
+# Run performance tests
+pnpm test:performance
+
+# Run visual regression tests
+pnpm test:visual
+```
+
 ### Run tests in headed mode
 
 ```bash
@@ -81,7 +102,7 @@ pnpm test-ui
 ### Run specific test file
 
 ```bash
-pnpm test tests/danielproctor-dev.spec.ts
+pnpm test tests/homepage.spec.ts
 ```
 
 ### Run tests in debug mode
@@ -104,23 +125,79 @@ The report will be available at `http://localhost:8080` (or `http://0.0.0.0:8080
 
 JUnit XML reports are generated in `test-results/junit.xml` after each test run.
 
+## 📸 Visual Regression Testing
+
+### Run visual tests
+
+```bash
+pnpm test:visual
+```
+
+### Update snapshots after UI changes
+
+```bash
+pnpm snapshots:update
+```
+
+### Approve snapshot changes
+
+```bash
+pnpm snapshots:approve
+```
+
+### Compare snapshots without updating
+
+```bash
+pnpm snapshots:compare
+```
+
+For detailed visual regression testing workflow, see [docs/visual-regression-guide.md](docs/visual-regression-guide.md).
+
 ## 🏗️ Project Structure
 
 ```
 playwright-devcontainer/
 ├── .devcontainer/          # DevContainer configuration
+├── .github/
+│   └── workflows/
+│       └── playwright.yml  # CI/CD pipeline configuration
+├── docs/
+│   └── visual-regression-guide.md  # Visual regression testing guide
+├── scripts/
+│   └── manage-snapshots.ts # Snapshot management utility
 ├── tests/
 │   ├── pages/              # Page Object Models
-│   │   ├── BasePage.ts
-│   │   ├── HomePage.ts
-│   │   ├── PostsPage.ts
-│   │   └── TagsPage.ts
-│   ├── fixtures/           # Test fixtures
+│   │   ├── BasePage.ts     # Base page class with common functionality
+│   │   ├── HomePage.ts     # Home page object
+│   │   ├── PostsPage.ts    # Blog posts page object
+│   │   ├── TagsPage.ts     # Tags page object
+│   │   └── index.ts        # Page exports
+│   ├── fixtures/           # Test fixtures and custom contexts
 │   │   └── index.ts
+│   ├── helpers/            # Common test utilities
+│   │   ├── browser.ts      # Browser-specific helpers
+│   │   ├── utils.ts        # General utilities
+│   │   └── index.ts        # Helper exports
+│   ├── config/             # Test configuration
+│   │   └── performance-budget.ts  # Performance budget settings
 │   ├── data/               # Test data and constants
-│   │   ├── constants.ts
-│   │   └── types.ts
-│   └── *.spec.ts           # Test files
+│   │   ├── content.constants.ts    # Content-related constants
+│   │   ├── navigation.constants.ts # Navigation URLs and links
+│   │   ├── viewport.constants.ts   # Viewport sizes & thresholds
+│   │   └── types.ts                # TypeScript types & test tags
+│   ├── utils/              # Utility functions
+│   │   ├── accessibility.ts        # Accessibility testing helpers
+│   │   ├── assertions.ts           # Custom assertions
+│   │   └── performance.ts          # Performance testing helpers
+│   ├── homepage.spec.ts    # Homepage tests
+│   ├── navigation.spec.ts  # Navigation tests
+│   ├── posts.spec.ts       # Blog posts tests
+│   ├── tags.spec.ts        # Tags page tests
+│   ├── accessibility.spec.ts  # Accessibility tests (@a11y tag)
+│   ├── performance.spec.ts    # Performance tests (@performance tag)
+│   └── *-snapshots/        # Visual regression test snapshots
+├── global-setup.ts         # Global test suite setup
+├── global-teardown.ts      # Global test suite teardown
 ├── playwright.config.ts    # Playwright configuration
 ├── tsconfig.json          # TypeScript configuration
 ├── eslint.config.js       # ESLint configuration
@@ -160,7 +237,24 @@ pnpm format:check
 pnpm type-check
 ```
 
-## 🔧 DevContainer Usage
+## � CI/CD
+
+This project includes a GitHub Actions workflow for continuous integration:
+
+- **Automatic test execution** on push and pull requests
+- **Test sharding** across 3 parallel jobs for faster execution
+- **Artifact uploads** for test results and HTML reports
+- **Test result publishing** with detailed failure information
+
+The workflow is configured in [.github/workflows/playwright.yml](.github/workflows/playwright.yml).
+
+### Environment Variables
+
+Configure the following in your CI/CD environment:
+- `BASE_URL`: Application URL to test against
+- `CI`: Set to `true` for CI-specific configurations
+
+## �🔧 DevContainer Usage
 
 ### What is a DevContainer?
 
@@ -194,6 +288,24 @@ Edit `.devcontainer/devcontainer.json` to:
 
 ## 📝 Writing Tests
 
+### Test Types
+
+This project supports multiple test types using tags:
+
+- **Functional Tests**: Core user journeys and functionality (no tag)
+- **Accessibility Tests**: Tagged with `@a11y` - uses @axe-core/playwright
+- **Performance Tests**: Tagged with `@performance` - uses playwright-lighthouse
+- **Visual Tests**: Tagged with `@visual` - uses Playwright's screenshot comparison
+
+Example:
+
+```typescript
+test('@a11y homepage should be accessible', async ({ page }) => {
+  await page.goto('/');
+  // accessibility testing logic
+});
+```
+
 ### Using Page Object Model
 
 ```typescript
@@ -209,11 +321,110 @@ test('example test using page objects', async ({ homePage }) => {
 ### Using Constants
 
 ```typescript
-import { SITE_CONFIG, BLOG_POSTS } from './data/constants';
+import { SOCIAL_LINKS, BLOG_POSTS } from './data/content.constants';
+import { NAVIGATION_URLS } from './data/navigation.constants';
 
 test('example test using constants', async ({ page }) => {
-  await page.goto(SITE_CONFIG.baseUrl);
+  await page.goto(NAVIGATION_URLS.home);
   await page.getByRole('link', { name: BLOG_POSTS.fedoraSilverblue }).click();
+});
+```
+
+### Using Utilities
+
+```typescript
+import { checkAccessibility } from './utils/accessibility';
+import { measurePerformance } from './utils/performance';
+
+test('example with utilities', async ({ page }) => {
+  await page.goto('/');
+  
+  // Check accessibility
+  await checkAccessibility(page);
+  
+  // Measure performance
+  const metrics = await measurePerformance(page);
+  expect(metrics.fcp).toBeLessThan(3000);
+});
+```
+
+### Using Helpers
+
+```typescript
+import { waitForNetworkIdle, clearBrowserStorage } from './helpers/browser';
+import { generateRandomEmail, retryWithBackoff } from './helpers/utils';
+
+test('example with helpers', async ({ page }) => {
+  // Clear storage before test
+  await clearBrowserStorage(page);
+  
+  // Wait for network to settle
+  await waitForNetworkIdle(page);
+  
+  // Generate test data
+  const email = generateRandomEmail();
+});
+```
+
+### Using Custom Assertions
+
+```typescript
+import { 
+  expectAccessibleHeading, 
+  expectValidFormField,
+  expectResponsiveImage 
+} from './utils/assertions';
+
+test('example with custom assertions', async ({ page }) => {
+  await page.goto('/');
+  
+  // Verify heading hierarchy
+  const heading = page.getByRole('heading', { name: 'Welcome' });
+  await expectAccessibleHeading(heading, 1);
+  
+  // Verify form field
+  const emailField = page.getByLabel('Email');
+  await expectValidFormField(emailField);
+  
+  // Verify responsive image
+  const logo = page.getByAltText('Company Logo');
+  await expectResponsiveImage(logo);
+});
+```
+
+### Using Performance Budgets
+
+```typescript
+import { PERFORMANCE_BUDGET } from './config/performance-budget';
+import { PERFORMANCE_THRESHOLDS } from './data/viewport.constants';
+
+test('example with performance budgets', async ({ page }) => {
+  await page.goto('/');
+  
+  const metrics = await checkPerformanceMetrics(page);
+  
+  expect(metrics.domContentLoaded).toBeLessThan(
+    PERFORMANCE_THRESHOLDS.domContentLoaded
+  );
+  expect(metrics.loadComplete).toBeLessThan(
+    PERFORMANCE_BUDGET.timing.loadComplete
+  );
+});
+```
+
+### Using Type-Safe Test Tags
+
+```typescript
+import { TEST_TAGS } from './data/types';
+
+test(`${TEST_TAGS.ACCESSIBILITY} homepage should be accessible`, async ({ page }) => {
+  await page.goto('/');
+  // test logic
+});
+
+test(`${TEST_TAGS.PERFORMANCE} page should load quickly`, async ({ page }) => {
+  await page.goto('/');
+  // test logic
 });
 ```
 
@@ -229,10 +440,19 @@ If any check fails, the commit will be rejected. Fix the issues and try again.
 
 ## 📚 Additional Resources
 
+### Documentation
 - [Playwright Documentation](https://playwright.dev/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [VS Code Remote Containers](https://code.visualstudio.com/docs/remote/containers)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
+- [Visual Regression Testing Guide](docs/visual-regression-guide.md)
+
+### Project Features
+- **Global Setup/Teardown**: [global-setup.ts](global-setup.ts), [global-teardown.ts](global-teardown.ts)
+- **Custom Assertions**: [tests/utils/assertions.ts](tests/utils/assertions.ts)
+- **Test Helpers**: [tests/helpers/](tests/helpers/)
+- **Performance Budgets**: [tests/config/performance-budget.ts](tests/config/performance-budget.ts)
+- **CI/CD Pipeline**: [.github/workflows/playwright.yml](.github/workflows/playwright.yml)
 
 ## 🚀 Next Steps
 

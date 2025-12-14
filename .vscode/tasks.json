@@ -101,6 +101,27 @@
       "command": "pnpm run type-check",
       "problemMatcher": ["$tsc"],
       "group": "build"
+    },
+    {
+      "label": "Update Visual Snapshots",
+      "type": "shell",
+      "command": "pnpm run snapshots:update",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Approve Visual Snapshots",
+      "type": "shell",
+      "command": "pnpm run snapshots:approve",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Compare Visual Snapshots",
+      "type": "shell",
+      "command": "pnpm run snapshots:compare",
+      "problemMatcher": [],
+      "group": "test"
     }
   ]
 }

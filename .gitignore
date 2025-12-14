@@ -141,3 +141,14 @@ vite.config.ts.timestamp-*
 .pnpm-store
 test-results/
 playwright-report/
+
+# Playwright-specific
+lighthouse-reports/
+test-results/screenshots/
+playwright/.cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+!.env.example

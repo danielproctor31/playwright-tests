@@ -1,5 +1,6 @@
 import { test, expect } from './fixtures';
 import { checkPerformanceMetrics } from './utils/performance';
+import { PERFORMANCE_THRESHOLDS } from './data/viewport.constants';
 
 test.describe('danielproctor.dev - Performance @performance', () => {
   test('should load homepage within acceptable time', async ({ homePage }) => {
@@ -7,7 +8,7 @@ test.describe('danielproctor.dev - Performance @performance', () => {
     await homePage.navigate();
     const loadTime = Date.now() - startTime;
 
-    expect(loadTime).toBeLessThan(5000); // 5 seconds max
+    expect(loadTime).toBeLessThan(PERFORMANCE_THRESHOLDS.pageLoad);
   });
 
   test('should have good Core Web Vitals metrics', async ({ homePage }) => {
@@ -16,9 +17,9 @@ test.describe('danielproctor.dev - Performance @performance', () => {
     const metrics = await checkPerformanceMetrics(homePage.page);
 
     // Check performance thresholds
-    expect(metrics.domContentLoaded).toBeLessThan(2000); // 2 seconds
-    expect(metrics.loadComplete).toBeLessThan(3000); // 3 seconds
-    expect(metrics.firstContentfulPaint).toBeLessThan(1800); // 1.8 seconds
+    expect(metrics.domContentLoaded).toBeLessThan(PERFORMANCE_THRESHOLDS.domContentLoaded);
+    expect(metrics.loadComplete).toBeLessThan(PERFORMANCE_THRESHOLDS.loadComplete);
+    expect(metrics.firstContentfulPaint).toBeLessThan(PERFORMANCE_THRESHOLDS.firstContentfulPaint);
   });
 
   test('should load posts page within acceptable time', async ({ postsPage }) => {
@@ -26,7 +27,7 @@ test.describe('danielproctor.dev - Performance @performance', () => {
     await postsPage.navigate();
     const loadTime = Date.now() - startTime;
 
-    expect(loadTime).toBeLessThan(5000);
+    expect(loadTime).toBeLessThan(PERFORMANCE_THRESHOLDS.pageLoad);
   });
 
   test('should have optimized images and assets', async ({ homePage }) => {
