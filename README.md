@@ -32,7 +32,7 @@ A comprehensive Playwright end-to-end testing project with TypeScript, featuring
 
    ```bash
    git clone <repository-url>
-   cd playwright-devcontainer
+   cd playwright-tests
    ```
 
 2. **Install dependencies**
