@@ -19,6 +19,9 @@ export default [
         console: 'readonly',
         process: 'readonly',
         __dirname: 'readonly',
+        document: 'readonly',
+        HTMLAnchorElement: 'readonly',
+        Element: 'readonly',
       },
     },
     plugins: {

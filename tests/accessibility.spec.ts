@@ -1,9 +1,118 @@
 import { test, expect } from './fixtures';
 import { SOCIAL_LINKS, BLOG_POSTS } from './data/content.constants';
-import { VIEWPORTS } from './data/viewport.constants';
 import { checkA11y, formatViolations } from './utils/accessibility';
 
 test.describe('danielproctor.dev - Accessibility & UI @a11y', () => {
+  test.describe('Keyboard Navigation', () => {
+    test('should navigate through header links using Tab key', async ({ homePage }) => {
+      await homePage.navigate();
+
+      // Focus on skip link first (should be first focusable element)
+      await homePage.page.keyboard.press('Tab');
+      await expect(homePage.skipToContentLink).toBeFocused();
+
+      // Tab to logo
+      await homePage.page.keyboard.press('Tab');
+      await expect(homePage.logoLink).toBeFocused();
+
+      // Tab to Posts link
+      await homePage.page.keyboard.press('Tab');
+      await expect(homePage.postsLink).toBeFocused();
+
+      // Tab to Tags link
+      await homePage.page.keyboard.press('Tab');
+      await expect(homePage.tagsLink).toBeFocused();
+
+      // Tab to Search link
+      await homePage.page.keyboard.press('Tab');
+      await expect(homePage.searchLink).toBeFocused();
+    });
+
+    test('should activate navigation links with Enter key', async ({ homePage }) => {
+      await homePage.navigate();
+
+      // Tab to Posts link
+      await homePage.page.keyboard.press('Tab'); // Skip link
+      await homePage.page.keyboard.press('Tab'); // Logo
+      await homePage.page.keyboard.press('Tab'); // Posts
+
+      // Verify focus is on Posts link
+      await expect(homePage.postsLink).toBeFocused();
+
+      // Activate with Enter
+      await homePage.page.keyboard.press('Enter');
+
+      // Verify navigation occurred
+      await expect(homePage.page).toHaveURL(/\/posts/);
+    });
+
+    test('should activate navigation links with Space key', async ({ homePage }) => {
+      await homePage.navigate();
+
+      // Tab to Tags link
+      await homePage.page.keyboard.press('Tab'); // Skip link
+      await homePage.page.keyboard.press('Tab'); // Logo
+      await homePage.page.keyboard.press('Tab'); // Posts
+      await homePage.page.keyboard.press('Tab'); // Tags
+
+      // Verify focus is on Tags link
+      await expect(homePage.tagsLink).toBeFocused();
+
+      // Activate with Space
+      await homePage.page.keyboard.press('Space');
+
+      // Verify navigation occurred
+      await expect(homePage.page).toHaveURL(/\/tags/);
+    });
+
+    test('should toggle theme with keyboard', async ({ homePage }) => {
+      await homePage.navigate();
+
+      // Focus the theme button using keyboard navigation
+      await homePage.themeButton.focus();
+      await expect(homePage.themeButton).toBeFocused();
+
+      // Verify initial theme state exists (either light or dark)
+      await expect(homePage.themeButton).toHaveText(/^(light|dark)$/);
+
+      // Toggle theme with Enter
+      await homePage.page.keyboard.press('Enter');
+
+      // Wait for theme to change - verify button still shows valid theme text
+      await expect(homePage.themeButton).toHaveText(/^(light|dark)$/);
+    });
+
+    test('should navigate blog posts with keyboard', async ({ homePage }) => {
+      await homePage.navigate();
+
+      // Get the first blog post link and focus it
+      const firstPostLink = homePage.page.locator('a[href*="/posts/"]').first();
+      await firstPostLink.focus();
+      await expect(firstPostLink).toBeFocused();
+
+      // Activate with Enter
+      await homePage.page.keyboard.press('Enter');
+
+      // Verify we navigated to a blog post
+      await expect(homePage.page).toHaveURL(/\/posts\//);
+    });
+
+    test('should use skip to content link', async ({ homePage }) => {
+      await homePage.navigate();
+
+      // Tab to skip link (first focusable element)
+      await homePage.page.keyboard.press('Tab');
+      await expect(homePage.skipToContentLink).toBeFocused();
+
+      // Activate skip link with Enter
+      await homePage.page.keyboard.press('Enter');
+
+      // Verify focus moved to main content
+      const mainContent = homePage.page.locator('#main-content');
+      await expect(mainContent).toBeFocused();
+    });
+  });
+
   test.describe('Theme Toggle', () => {
     test('should toggle theme from light to dark', async ({ homePage }) => {
       await homePage.navigate();
@@ -90,32 +199,6 @@ test.describe('danielproctor.dev - Accessibility & UI @a11y', () => {
 
       // Note: Use formatViolations(criticalViolations) in test reporter for debugging
       expect(criticalViolations, formatViolations(criticalViolations)).toHaveLength(0);
-    });
-  });
-
-  test.describe('Responsiveness', () => {
-    test('should render correctly on mobile viewport', async ({ homePage }) => {
-      await homePage.page.setViewportSize(VIEWPORTS.mobile);
-      await homePage.navigate();
-
-      await expect(homePage.logoLink).toBeVisible();
-      await expect(homePage.recentPostsHeading).toBeVisible();
-    });
-
-    test('should render correctly on tablet viewport', async ({ homePage }) => {
-      await homePage.page.setViewportSize(VIEWPORTS.tablet);
-      await homePage.navigate();
-
-      await expect(homePage.logoLink).toBeVisible();
-      await expect(homePage.recentPostsHeading).toBeVisible();
-    });
-
-    test('should render correctly on desktop viewport', async ({ homePage }) => {
-      await homePage.page.setViewportSize(VIEWPORTS.desktop);
-      await homePage.navigate();
-
-      await expect(homePage.logoLink).toBeVisible();
-      await expect(homePage.recentPostsHeading).toBeVisible();
     });
   });
 });

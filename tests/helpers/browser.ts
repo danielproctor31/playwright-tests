@@ -16,10 +16,7 @@ export async function waitForNetworkIdle(page: Page, timeout: number = 10000) {
  */
 export async function waitForAnimations(page: Page) {
   await page.evaluate(() => {
-    return Promise.all(
-      // eslint-disable-next-line no-undef
-      document.getAnimations().map((animation) => animation.finished)
-    );
+    return Promise.all(document.getAnimations().map((animation) => animation.finished));
   });
 }
 

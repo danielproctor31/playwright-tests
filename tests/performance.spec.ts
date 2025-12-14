@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures';
 import { checkPerformanceMetrics } from './utils/performance';
-import { PERFORMANCE_THRESHOLDS } from './data/viewport.constants';
+import { PERFORMANCE_THRESHOLDS } from './data/test.constants';
 
 test.describe('danielproctor.dev - Performance @performance', () => {
   test('should load homepage within acceptable time', async ({ homePage }) => {
