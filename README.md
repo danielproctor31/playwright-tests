@@ -1,4 +1,4 @@
-# Playwright DevContainer
+# Playwright Tests
 
 A comprehensive Playwright end-to-end testing project with TypeScript, featuring multiple test types including functional, accessibility, performance, and visual regression testing. Leverages Model Context Protocol (MCP) for enhanced test generation and automation, configured to run in a DevContainer for a consistent development environment.
 
