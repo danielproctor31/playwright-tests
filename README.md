@@ -153,58 +153,6 @@ pnpm snapshots:compare
 
 For detailed visual regression testing workflow, see [docs/visual-regression-guide.md](docs/visual-regression-guide.md).
 
-## 🏗️ Project Structure
-
-```
-playwright-devcontainer/
-├── .devcontainer/          # DevContainer configuration
-├── .github/
-│   └── workflows/
-│       └── playwright.yml  # CI/CD pipeline configuration
-├── docs/
-│   └── visual-regression-guide.md  # Visual regression testing guide
-├── scripts/
-│   └── manage-snapshots.ts # Snapshot management utility
-├── tests/
-│   ├── pages/              # Page Object Models
-│   │   ├── BasePage.ts     # Base page class with common functionality
-│   │   ├── HomePage.ts     # Home page object
-│   │   ├── PostsPage.ts    # Blog posts page object
-│   │   ├── TagsPage.ts     # Tags page object
-│   │   └── index.ts        # Page exports
-│   ├── fixtures/           # Test fixtures and custom contexts
-│   │   └── index.ts
-│   ├── helpers/            # Common test utilities
-│   │   ├── browser.ts      # Browser-specific helpers
-│   │   ├── utils.ts        # General utilities
-│   │   └── index.ts        # Helper exports
-│   ├── config/             # Test configuration
-│   │   └── performance-budget.ts  # Performance budget settings
-│   ├── data/               # Test data and constants
-│   │   ├── content.constants.ts    # Content-related constants
-│   │   ├── navigation.constants.ts # Navigation URLs and links
-│   │   ├── viewport.constants.ts   # Viewport sizes & thresholds
-│   │   └── types.ts                # TypeScript types & test tags
-│   ├── utils/              # Utility functions
-│   │   ├── accessibility.ts        # Accessibility testing helpers
-│   │   ├── assertions.ts           # Custom assertions
-│   │   └── performance.ts          # Performance testing helpers
-│   ├── homepage.spec.ts    # Homepage tests
-│   ├── navigation.spec.ts  # Navigation tests
-│   ├── posts.spec.ts       # Blog posts tests
-│   ├── tags.spec.ts        # Tags page tests
-│   ├── accessibility.spec.ts  # Accessibility tests (@a11y tag)
-│   ├── performance.spec.ts    # Performance tests (@performance tag)
-│   └── *-snapshots/        # Visual regression test snapshots
-├── global-setup.ts         # Global test suite setup
-├── global-teardown.ts      # Global test suite teardown
-├── playwright.config.ts    # Playwright configuration
-├── tsconfig.json          # TypeScript configuration
-├── eslint.config.js       # ESLint configuration
-├── .prettierrc.json       # Prettier configuration
-└── package.json           # Project dependencies
-```
-
 ## 🎨 Code Quality
 
 ### Run linter
@@ -237,55 +185,11 @@ pnpm format:check
 pnpm type-check
 ```
 
-## � CI/CD
-
-This project includes a GitHub Actions workflow for continuous integration:
-
-- **Automatic test execution** on push and pull requests
-- **Test sharding** across 3 parallel jobs for faster execution
-- **Artifact uploads** for test results and HTML reports
-- **Test result publishing** with detailed failure information
-
-The workflow is configured in [.github/workflows/playwright.yml](.github/workflows/playwright.yml).
-
 ### Environment Variables
 
 Configure the following in your CI/CD environment:
 
 - `BASE_URL`: Application URL to test against
-- `CI`: Set to `true` for CI-specific configurations
-
-## �🔧 DevContainer Usage
-
-### What is a DevContainer?
-
-A DevContainer provides a complete development environment inside a Docker container. This ensures:
-
-- Consistent development environment across all team members
-- No "works on my machine" issues
-- Pre-configured tools and extensions
-- Easy onboarding for new developers
-
-### Features of this DevContainer
-
-- Pre-installed Playwright and browsers
-- Node.js v22 LTS
-- Essential VS Code extensions:
-  - Playwright Test for VS Code
-  - ESLint
-  - Prettier
-  - GitHub Copilot
-- Network access for running tests against external sites
-- Port forwarding for viewing test reports
-
-### Customizing the DevContainer
-
-Edit `.devcontainer/devcontainer.json` to:
-
-- Add VS Code extensions
-- Configure environment variables
-- Adjust port forwarding
-- Install additional tools
 
 ## 📝 Writing Tests
 
@@ -397,7 +301,7 @@ test('example with custom assertions', async ({ page }) => {
 
 ```typescript
 import { PERFORMANCE_BUDGET } from './config/performance-budget';
-import { PERFORMANCE_THRESHOLDS } from './data/viewport.constants';
+import { PERFORMANCE_THRESHOLDS } from './data/test.constants';
 
 test('example with performance budgets', async ({ page }) => {
   await page.goto('/');
@@ -473,16 +377,3 @@ pnpm type-check
 # Run tests to verify everything works
 pnpm test
 ```
-
-## 🤝 Contributing
-
-1. Create a feature branch
-2. Make your changes
-3. Ensure all tests pass: `pnpm test`
-4. Run linting and formatting: `pnpm lint:fix && pnpm format`
-5. Commit your changes (pre-commit hooks will run automatically)
-6. Push and create a pull request
-
-## 📄 License
-
-ISC
