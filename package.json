@@ -1,5 +1,5 @@
 {
-  "name": "playwright-devcontainer",
+  "name": "playwright-tests",
   "version": "1.0.0",
   "description": "Playwright end-to-end testing project with MCP integration for enhanced test generation and automation",
   "main": "index.js",
