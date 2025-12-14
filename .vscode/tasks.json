@@ -5,19 +5,102 @@
       "label": "Install Dependencies",
       "type": "shell",
       "command": "pnpm install",
-      "problemMatcher": []
+      "problemMatcher": [],
+      "group": "none"
     },
     {
-      "label": "Run Playwright Report",
-      "type": "shell",
-      "command": "pnpm run report",
-      "problemMatcher": []
-    },
-    {
-      "label": "Run Playwright Tests",
+      "label": "Run All Tests",
       "type": "shell",
       "command": "pnpm run test",
-      "problemMatcher": []
+      "problemMatcher": [],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Run Functional Tests",
+      "type": "shell",
+      "command": "pnpm run test:functional",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Run Accessibility Tests",
+      "type": "shell",
+      "command": "pnpm run test:a11y",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Run Performance Tests",
+      "type": "shell",
+      "command": "pnpm run test:performance",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Run Visual Tests",
+      "type": "shell",
+      "command": "pnpm run test:visual",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Run Tests (Headed)",
+      "type": "shell",
+      "command": "pnpm run test-headed",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Run Tests (UI Mode)",
+      "type": "shell",
+      "command": "pnpm run test-ui",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Show Test Report",
+      "type": "shell",
+      "command": "pnpm run report",
+      "problemMatcher": [],
+      "group": "none"
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "pnpm run lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "group": "build"
+    },
+    {
+      "label": "Lint & Fix",
+      "type": "shell",
+      "command": "pnpm run lint:fix",
+      "problemMatcher": ["$eslint-stylish"],
+      "group": "build"
+    },
+    {
+      "label": "Format Code",
+      "type": "shell",
+      "command": "pnpm run format",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Check Formatting",
+      "type": "shell",
+      "command": "pnpm run format:check",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Type Check",
+      "type": "shell",
+      "command": "pnpm run type-check",
+      "problemMatcher": ["$tsc"],
+      "group": "build"
     }
   ]
 }

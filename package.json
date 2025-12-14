@@ -6,6 +6,10 @@
   "type": "module",
   "scripts": {
     "test": "playwright test",
+    "test:functional": "playwright test --grep-invert '@a11y|@performance|@visual'",
+    "test:a11y": "playwright test --grep '@a11y'",
+    "test:performance": "playwright test --grep '@performance'",
+    "test:visual": "playwright test --grep '@visual'",
     "test-headed": "playwright test --headed",
     "test-ui": "playwright test --ui",
     "report": "playwright show-report --host 0.0.0.0",
@@ -26,6 +30,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@eslint/js": "^9.17.0",
     "@playwright/test": "^1.57.0",
     "@types/node": "^25.0.1",
@@ -35,6 +40,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-playwright": "^2.1.0",
     "husky": "^9.1.7",
+    "playwright-lighthouse": "^4.0.0",
     "prettier": "^3.4.2",
     "typescript": "^5.7.2"
   },
