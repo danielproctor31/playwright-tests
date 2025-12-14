@@ -42,18 +42,19 @@ export async function retryWithBackoff<T>(
   delay: number = 1000
 ): Promise<T> {
   let lastError: Error | undefined;
-  
+
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error as Error;
       if (i < maxRetries - 1) {
+        // eslint-disable-next-line no-undef
         await new Promise((resolve) => setTimeout(resolve, delay * Math.pow(2, i)));
       }
     }
   }
-  
+
   throw lastError;
 }
 
@@ -62,6 +63,7 @@ export async function retryWithBackoff<T>(
  * @param ms - Milliseconds to sleep
  */
 export async function sleep(ms: number): Promise<void> {
+  // eslint-disable-next-line no-undef
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 

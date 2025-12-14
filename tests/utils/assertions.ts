@@ -114,12 +114,12 @@ export async function expectProperAriaAttributes(
 export async function expectValidFormField(locator: Locator, hasLabel: boolean = true) {
   await expect(locator).toBeVisible();
   await expect(locator).toBeEnabled();
-  
+
   if (hasLabel) {
     const id = await locator.getAttribute('id');
     const ariaLabel = await locator.getAttribute('aria-label');
     const ariaLabelledBy = await locator.getAttribute('aria-labelledby');
-    
+
     expect(id || ariaLabel || ariaLabelledBy).toBeTruthy();
   }
 }
@@ -142,7 +142,7 @@ export async function expectSecureExternalLink(locator: Locator) {
 export async function expectValidList(page: Page, selector: string, expectedCount?: number) {
   const list = page.locator(selector);
   await expect(list).toBeVisible();
-  
+
   const items = list.locator('li, [role="listitem"]');
   if (expectedCount !== undefined) {
     await expect(items).toHaveCount(expectedCount);
@@ -158,10 +158,10 @@ export async function expectValidList(page: Page, selector: string, expectedCoun
 export async function expectResponsiveImage(locator: Locator) {
   await expect(locator).toBeVisible();
   await expect(locator).toHaveAttribute('alt');
-  
+
   // Check if image has srcset or is in a picture element
   const hasSrcset = await locator.getAttribute('srcset');
   const parentTag = await locator.evaluate((el) => el.parentElement?.tagName.toLowerCase());
-  
+
   expect(hasSrcset || parentTag === 'picture').toBeTruthy();
 }

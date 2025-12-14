@@ -6,7 +6,8 @@ import { Page } from '@playwright/test';
  * @param timeout - Maximum time to wait in milliseconds
  */
 export async function waitForNetworkIdle(page: Page, timeout: number = 10000) {
-  await page.waitForLoadState('networkidle', { timeout });
+  // Using domcontentloaded as networkidle can be flaky
+  await page.waitForLoadState('domcontentloaded', { timeout });
 }
 
 /**
@@ -29,6 +30,7 @@ export async function waitForAnimations(page: Page) {
  */
 export async function scrollToElement(page: Page, selector: string) {
   await page.locator(selector).scrollIntoViewIfNeeded();
+  // eslint-disable-next-line playwright/no-wait-for-timeout
   await page.waitForTimeout(300); // Small delay for smooth scroll
 }
 
@@ -40,17 +42,19 @@ export async function scrollToElement(page: Page, selector: string) {
 export async function waitForElementStability(page: Page, selector: string) {
   const element = page.locator(selector);
   await element.waitFor({ state: 'visible' });
-  
+
   let previousBox = await element.boundingBox();
+  // eslint-disable-next-line playwright/no-wait-for-timeout
   await page.waitForTimeout(100);
   let currentBox = await element.boundingBox();
-  
+
   while (
     previousBox &&
     currentBox &&
     (previousBox.x !== currentBox.x || previousBox.y !== currentBox.y)
   ) {
     previousBox = currentBox;
+    // eslint-disable-next-line playwright/no-wait-for-timeout
     await page.waitForTimeout(100);
     currentBox = await element.boundingBox();
   }

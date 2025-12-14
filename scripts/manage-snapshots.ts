@@ -1,13 +1,14 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 /**
  * Visual Regression Snapshot Management Tool
- * 
+ *
  * This script helps manage visual regression test snapshots:
  * - Review snapshot differences
  * - Approve or reject changes
  * - Bulk operations on snapshots
- * 
+ *
  * Usage:
  *   pnpm snapshots:update    - Update all snapshots
  *   pnpm snapshots:approve   - Approve all snapshot changes
@@ -24,13 +25,13 @@ const SNAPSHOTS_DIR = './tests';
  */
 function findSnapshotDirectories(dir: string): string[] {
   const snapshots: string[] = [];
-  
+
   try {
     const files = readdirSync(dir);
-    
+
     for (const file of files) {
       const fullPath = join(dir, file);
-      
+
       if (statSync(fullPath).isDirectory()) {
         if (file.endsWith('-snapshots')) {
           snapshots.push(fullPath);
@@ -43,7 +44,7 @@ function findSnapshotDirectories(dir: string): string[] {
   } catch (error) {
     console.error(`Error reading directory ${dir}:`, error);
   }
-  
+
   return snapshots;
 }
 
@@ -52,9 +53,9 @@ function findSnapshotDirectories(dir: string): string[] {
  */
 function countSnapshots(dir: string): number {
   if (!existsSync(dir)) return 0;
-  
+
   const files = readdirSync(dir);
-  return files.filter(f => f.endsWith('.png')).length;
+  return files.filter((f) => f.endsWith('.png')).length;
 }
 
 /**
@@ -62,22 +63,22 @@ function countSnapshots(dir: string): number {
  */
 function displaySnapshotSummary() {
   console.log('\n📸 Visual Regression Snapshot Summary\n');
-  
+
   const snapshotDirs = findSnapshotDirectories(SNAPSHOTS_DIR);
-  
+
   if (snapshotDirs.length === 0) {
     console.log('No snapshot directories found.');
     return;
   }
-  
+
   let totalSnapshots = 0;
-  
+
   for (const dir of snapshotDirs) {
     const count = countSnapshots(dir);
     totalSnapshots += count;
     console.log(`  ${dir}: ${count} snapshot(s)`);
   }
-  
+
   console.log(`\n  Total: ${totalSnapshots} snapshot(s)\n`);
 }
 
@@ -112,7 +113,7 @@ Tips:
 
 Current snapshot status:
 `);
-  
+
   displaySnapshotSummary();
 }
 

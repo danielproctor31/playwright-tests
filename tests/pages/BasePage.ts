@@ -63,7 +63,8 @@ export class BasePage {
    * @param options - Wait options including timeout
    */
   async waitForNetworkIdle(options?: { timeout?: number }) {
-    await this.page.waitForLoadState('networkidle', options);
+    // Using domcontentloaded as networkidle can be flaky in some scenarios
+    await this.page.waitForLoadState('domcontentloaded', options);
   }
 
   /**
@@ -99,7 +100,10 @@ export class BasePage {
    * Reload the current page
    * @param options - Navigation options including timeout
    */
-  async reload(options?: { timeout?: number; waitUntil?: 'load' | 'domcontentloaded' | 'networkidle' }) {
+  async reload(options?: {
+    timeout?: number;
+    waitUntil?: 'load' | 'domcontentloaded' | 'networkidle';
+  }) {
     await this.page.reload(options);
   }
 

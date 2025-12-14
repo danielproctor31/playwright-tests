@@ -6,7 +6,7 @@ A comprehensive Playwright end-to-end testing project with TypeScript, featuring
 
 - **TypeScript Support**: Fully typed test codebase with strict TypeScript configuration
 - **Page Object Model**: Organized test structure with reusable page objects and fixtures
-- **Multiple Test Types**: 
+- **Multiple Test Types**:
   - Functional tests for core user journeys
   - Accessibility testing with @axe-core/playwright
   - Performance testing with playwright-lighthouse
@@ -251,6 +251,7 @@ The workflow is configured in [.github/workflows/playwright.yml](.github/workflo
 ### Environment Variables
 
 Configure the following in your CI/CD environment:
+
 - `BASE_URL`: Application URL to test against
 - `CI`: Set to `true` for CI-specific configurations
 
@@ -338,10 +339,10 @@ import { measurePerformance } from './utils/performance';
 
 test('example with utilities', async ({ page }) => {
   await page.goto('/');
-  
+
   // Check accessibility
   await checkAccessibility(page);
-  
+
   // Measure performance
   const metrics = await measurePerformance(page);
   expect(metrics.fcp).toBeLessThan(3000);
@@ -357,10 +358,10 @@ import { generateRandomEmail, retryWithBackoff } from './helpers/utils';
 test('example with helpers', async ({ page }) => {
   // Clear storage before test
   await clearBrowserStorage(page);
-  
+
   // Wait for network to settle
   await waitForNetworkIdle(page);
-  
+
   // Generate test data
   const email = generateRandomEmail();
 });
@@ -369,23 +370,23 @@ test('example with helpers', async ({ page }) => {
 ### Using Custom Assertions
 
 ```typescript
-import { 
-  expectAccessibleHeading, 
+import {
+  expectAccessibleHeading,
   expectValidFormField,
-  expectResponsiveImage 
+  expectResponsiveImage,
 } from './utils/assertions';
 
 test('example with custom assertions', async ({ page }) => {
   await page.goto('/');
-  
+
   // Verify heading hierarchy
   const heading = page.getByRole('heading', { name: 'Welcome' });
   await expectAccessibleHeading(heading, 1);
-  
+
   // Verify form field
   const emailField = page.getByLabel('Email');
   await expectValidFormField(emailField);
-  
+
   // Verify responsive image
   const logo = page.getByAltText('Company Logo');
   await expectResponsiveImage(logo);
@@ -400,15 +401,11 @@ import { PERFORMANCE_THRESHOLDS } from './data/viewport.constants';
 
 test('example with performance budgets', async ({ page }) => {
   await page.goto('/');
-  
+
   const metrics = await checkPerformanceMetrics(page);
-  
-  expect(metrics.domContentLoaded).toBeLessThan(
-    PERFORMANCE_THRESHOLDS.domContentLoaded
-  );
-  expect(metrics.loadComplete).toBeLessThan(
-    PERFORMANCE_BUDGET.timing.loadComplete
-  );
+
+  expect(metrics.domContentLoaded).toBeLessThan(PERFORMANCE_THRESHOLDS.domContentLoaded);
+  expect(metrics.loadComplete).toBeLessThan(PERFORMANCE_BUDGET.timing.loadComplete);
 });
 ```
 
@@ -441,6 +438,7 @@ If any check fails, the commit will be rejected. Fix the issues and try again.
 ## 📚 Additional Resources
 
 ### Documentation
+
 - [Playwright Documentation](https://playwright.dev/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [VS Code Remote Containers](https://code.visualstudio.com/docs/remote/containers)
@@ -448,6 +446,7 @@ If any check fails, the commit will be rejected. Fix the issues and try again.
 - [Visual Regression Testing Guide](docs/visual-regression-guide.md)
 
 ### Project Features
+
 - **Global Setup/Teardown**: [global-setup.ts](global-setup.ts), [global-teardown.ts](global-teardown.ts)
 - **Custom Assertions**: [tests/utils/assertions.ts](tests/utils/assertions.ts)
 - **Test Helpers**: [tests/helpers/](tests/helpers/)

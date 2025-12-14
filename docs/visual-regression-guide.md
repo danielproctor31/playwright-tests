@@ -20,10 +20,12 @@ pnpm test:visual -- --ui
 Visual regression tests capture screenshots of your application and compare them with baseline images (snapshots). Any pixel differences will cause the test to fail.
 
 Snapshot files are stored in directories like:
+
 - `tests/homepage.spec.ts-snapshots/`
 - `tests/posts.spec.ts-snapshots/`
 
 Each snapshot is named with the browser and viewport, e.g.:
+
 - `homepage-chromium-linux.png`
 - `posts-page-chromium-darwin.png`
 
@@ -32,12 +34,14 @@ Each snapshot is named with the browser and viewport, e.g.:
 When visual tests fail due to differences:
 
 1. **Review the differences**
+
    ```bash
    pnpm report
    ```
+
    Open the HTML report in your browser to see:
    - Expected (baseline) image
-   - Actual (current) image  
+   - Actual (current) image
    - Diff highlighting the changes
 
 2. **Determine if changes are expected**
@@ -45,9 +49,11 @@ When visual tests fail due to differences:
    - ❌ **Unexpected**: Regression or unintended visual change
 
 3. **Approve changes** (if expected)
+
    ```bash
    pnpm snapshots:approve
    ```
+
    This updates all snapshot baselines with the current screenshots.
 
 4. **Re-run tests** to verify
@@ -86,6 +92,7 @@ Shows a summary of all snapshot directories and counts.
 ### 1. Review Before Approving
 
 **Always review snapshot differences** before approving. Unexpected changes might indicate:
+
 - CSS regression
 - Rendering issues
 - Animation timing problems
@@ -115,15 +122,15 @@ To reduce flaky visual tests:
 ```typescript
 test('@visual homepage should match snapshot', async ({ homePage }) => {
   await homePage.navigate();
-  
+
   // Wait for animations to complete
   await homePage.page.waitForTimeout(500);
-  
+
   // Disable animations
-  await homePage.page.addStyleTag({ 
-    content: '*, *::before, *::after { animation-duration: 0s !important; }' 
+  await homePage.page.addStyleTag({
+    content: '*, *::before, *::after { animation-duration: 0s !important; }',
   });
-  
+
   await expect(homePage.page).toHaveScreenshot('homepage.png', {
     maxDiffPixels: 100, // Allow small differences
     animations: 'disabled',
@@ -134,6 +141,7 @@ test('@visual homepage should match snapshot', async ({ homePage }) => {
 ### 5. Test Stable States
 
 Only capture snapshots of **stable UI states**:
+
 - ✅ After page load
 - ✅ After animations complete
 - ✅ After data loads
@@ -161,7 +169,8 @@ Adjust `maxDiffPixels` based on your tolerance for differences.
 
 **Cause**: Font rendering, screen resolution, or OS differences.
 
-**Solution**: 
+**Solution**:
+
 - Generate snapshots on the same platform as CI (usually Linux)
 - Use Docker or DevContainer for consistency
 - Accept platform-specific snapshots
@@ -171,6 +180,7 @@ Adjust `maxDiffPixels` based on your tolerance for differences.
 **Cause**: CI uses different OS/browser versions.
 
 **Solution**:
+
 - Update snapshots in CI environment
 - Download artifacts from CI and commit them
 
@@ -179,12 +189,13 @@ Adjust `maxDiffPixels` based on your tolerance for differences.
 **Cause**: Dynamic content (dates, animations, random data).
 
 **Solution**:
+
 - Mock dynamic content
 - Use stable test data
-- Mask regions that change: 
+- Mask regions that change:
   ```typescript
   await expect(page).toHaveScreenshot({
-    mask: [page.locator('.timestamp')]
+    mask: [page.locator('.timestamp')],
   });
   ```
 
@@ -202,7 +213,7 @@ pnpm test:visual tests/homepage.spec.ts --update-snapshots
 
 ```typescript
 await expect(page).toHaveScreenshot('full-page.png', {
-  fullPage: true
+  fullPage: true,
 });
 ```
 
@@ -217,9 +228,6 @@ await expect(element).toHaveScreenshot('component.png');
 
 ```typescript
 await expect(page).toHaveScreenshot({
-  mask: [
-    page.locator('.timestamp'),
-    page.locator('.live-chat'),
-  ]
+  mask: [page.locator('.timestamp'), page.locator('.live-chat')],
 });
 ```

@@ -7,9 +7,9 @@ import { FullConfig } from '@playwright/test';
 async function globalSetup(config: FullConfig) {
   // eslint-disable-next-line no-console
   console.log('🚀 Starting Playwright test suite...');
-  
+
   const baseURL = config.projects[0]?.use?.baseURL;
-  
+
   // eslint-disable-next-line no-console
   console.log(`Base URL: ${baseURL || 'Not configured'}`);
   // eslint-disable-next-line no-console
@@ -26,6 +26,7 @@ async function globalSetup(config: FullConfig) {
   // Example: Verify test environment is accessible
   if (baseURL) {
     try {
+      // eslint-disable-next-line no-undef
       const response = await fetch(baseURL);
       if (!response.ok) {
         // eslint-disable-next-line no-console

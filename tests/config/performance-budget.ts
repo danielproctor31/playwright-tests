@@ -1,9 +1,9 @@
 /**
  * Performance Budget Configuration
- * 
+ *
  * This file defines performance budgets for the application.
  * Tests can reference these values to ensure performance stays within acceptable limits.
- * 
+ *
  * Budgets are based on:
  * - Core Web Vitals recommendations
  * - Industry best practices
